@@ -2,28 +2,110 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>食品转盘</title>
+  <title>🍜 今天吃什么？</title>
   <style>
-    body { font-family: sans-serif; text-align: center; background: #fff; margin-top: 50px; }
-    .wheel-container { position: relative; margin: 0 auto; width: 300px; height: 300px; border: 10px solid #ccc; border-radius: 50%; overflow: hidden; }
-    .wheel { width: 100%; height: 100%; transform: rotate(0deg); transition: transform 4s cubic-bezier(0.25, 1, 0.25, 1); }
-    .segment { position: absolute; width: 50%; height: 50%; top: 50%; left: 50%; transform-origin: 0% 0%; text-align: left; padding-left: 10px; color: #000; font-weight: bold; }
-    .pointer { margin: 20px auto; width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 30px solid red; }
-    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
-    #result { margin-top: 20px; font-size: 20px; font-weight: bold; }
-    #history { margin-top: 30px; font-size: 14px; color: #666; max-width: 300px; margin-left: auto; margin-right: auto; text-align: left; }
+    body {
+      font-family: "Arial", sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 30px solid #e74c3c;
+      margin-bottom: -15px;
+      z-index: 2;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      transform: rotate(0deg);
+      transition: transform 4s cubic-bezier(0.25, 1, 0.25, 1);
+      border-radius: 50%;
+    }
+
+    .segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      padding-left: 10px;
+      color: #fff;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #2c3e50;
+    }
+
+    #history {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #555;
+      max-width: 300px;
+      text-align: left;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🍽️ 今天吃什么？</h1>
+  <h1>🍜 今天吃什么？</h1>
   <div class="pointer"></div>
   <div class="wheel-container">
     <div class="wheel" id="wheel"></div>
   </div>
   <button onclick="spin()">开始转盘</button>
   <div id="result"></div>
-  <div id="history"><h3>历史记录：</h3><ul id="historyList"></ul></div>
+  <div id="history">
+    <h3>历史记录：</h3>
+    <ul id="historyList"></ul>
+  </div>
 
   <script>
     const foods = ['木桶饭', '川菜', '苗家饭馆', '湖南菜', '鱼', '兔', '夜市', '其它'];
@@ -36,7 +118,7 @@
         const seg = document.createElement('div');
         seg.className = 'segment';
         seg.style.transform = `rotate(${i * angleStep}deg) skewY(${90 - angleStep}deg)`;
-        seg.style.background = i % 2 === 0 ? '#f9c74f' : '#90be6d';
+        seg.style.background = i % 2 === 0 ? '#f39c12' : '#16a085';
         seg.innerHTML = `<span style="transform: skewY(-${90 - angleStep}deg) rotate(${angleStep / 2}deg); display: inline-block;">${food}</span>`;
         wheel.appendChild(seg);
       });
@@ -49,14 +131,13 @@
       spinning = true;
       const randomIndex = Math.floor(Math.random() * foods.length);
       const angle = 3600 + (360 - (randomIndex * (360 / foods.length)) - (360 / foods.length) / 2);
-      wheel.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.25, 1)';
       wheel.style.transform = `rotate(${angle}deg)`;
 
       const now = new Date();
       const timeStr = now.toLocaleString('zh-CN');
 
       setTimeout(() => {
-        document.getElementById('result').innerText = `今天吃：${foods[randomIndex]}！`;
+        document.getElementById('result').innerText = `✅ 今天吃：${foods[randomIndex]}`;
         saveHistory(timeStr);
         showHistory();
         spinning = false;
@@ -66,7 +147,7 @@
     function saveHistory(timeStr) {
       const history = JSON.parse(localStorage.getItem('spinHistory') || '[]');
       history.unshift(timeStr);
-      if (history.length > 20) history.pop(); // 保留最近20条
+      if (history.length > 20) history.pop();
       localStorage.setItem('spinHistory', JSON.stringify(history));
     }
 
@@ -79,11 +160,3 @@
         li.textContent = time;
         list.appendChild(li);
       });
-    }
-
-    drawWheel();
-    showHistory();
-  </script>
-
-</body>
-</html>
