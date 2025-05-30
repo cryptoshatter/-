@@ -5,29 +5,35 @@
   <title>🍜 今天吃什么？</title>
   <style>
     body {
-      font-family: "Arial", sans-serif;
-      background: #f2f2f2;
+      font-family: "HarmonyOS Sans", "Arial", sans-serif;
+      background-color: #fefefe;
+      color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
       margin: 0;
-      padding: 20px;
+      padding: 30px;
     }
 
     h1 {
-      font-size: 2rem;
-      color: #333;
+      font-size: 28px;
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    h1::before {
+      content: "🍽️";
+      margin-right: 8px;
     }
 
     .pointer {
       width: 0;
       height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-top: 30px solid #e74c3c;
-      margin-bottom: -15px;
-      z-index: 2;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 20px solid #e74c3c;
+      margin-bottom: -10px;
     }
 
     .wheel-container {
@@ -36,16 +42,17 @@
       height: 300px;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       background: #fff;
+      border: 8px solid #eee;
     }
 
     .wheel {
       width: 100%;
       height: 100%;
-      transform: rotate(0deg);
-      transition: transform 4s cubic-bezier(0.25, 1, 0.25, 1);
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
       border-radius: 50%;
+      position: relative;
     }
 
     .segment {
@@ -55,47 +62,54 @@
       top: 50%;
       left: 50%;
       transform-origin: 0% 0%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
       padding-left: 10px;
       color: #fff;
       font-size: 14px;
-      display: flex;
-      align-items: center;
     }
 
     button {
-      margin-top: 20px;
-      padding: 12px 30px;
+      margin-top: 25px;
+      padding: 10px 25px;
       font-size: 16px;
-      border: none;
-      border-radius: 8px;
       background-color: #3498db;
-      color: white;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background-color: #2980b9;
     }
 
     #result {
       margin-top: 20px;
-      font-size: 20px;
+      font-size: 18px;
       color: #2c3e50;
+      font-weight: bold;
     }
 
     #history {
       margin-top: 30px;
       font-size: 14px;
-      color: #555;
+      color: #666;
       max-width: 300px;
       text-align: left;
     }
 
     ul {
       padding-left: 20px;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🍜 今天吃什么？</h1>
+  <h1>今天吃什么？</h1>
   <div class="pointer"></div>
   <div class="wheel-container">
     <div class="wheel" id="wheel"></div>
@@ -103,7 +117,7 @@
   <button onclick="spin()">开始转盘</button>
   <div id="result"></div>
   <div id="history">
-    <h3>历史记录：</h3>
+    <strong>历史记录：</strong>
     <ul id="historyList"></ul>
   </div>
 
@@ -114,14 +128,14 @@
     function drawWheel() {
       wheel.innerHTML = '';
       const angleStep = 360 / foods.length;
-      foods.forEach((food, i) => {
+      for (let i = 0; i < foods.length; i++) {
         const seg = document.createElement('div');
         seg.className = 'segment';
         seg.style.transform = `rotate(${i * angleStep}deg) skewY(${90 - angleStep}deg)`;
-        seg.style.background = i % 2 === 0 ? '#f39c12' : '#16a085';
-        seg.innerHTML = `<span style="transform: skewY(-${90 - angleStep}deg) rotate(${angleStep / 2}deg); display: inline-block;">${food}</span>`;
+        seg.style.background = i % 2 === 0 ? '#16a085' : '#f39c12';
+        seg.innerHTML = `<span style="transform: skewY(-${90 - angleStep}deg) rotate(${angleStep / 2}deg); display: inline-block;">${foods[i]}</span>`;
         wheel.appendChild(seg);
-      });
+      }
     }
 
     let spinning = false;
@@ -160,3 +174,11 @@
         li.textContent = time;
         list.appendChild(li);
       });
+    }
+
+    drawWheel();
+    showHistory();
+  </script>
+
+</body>
+</html>
